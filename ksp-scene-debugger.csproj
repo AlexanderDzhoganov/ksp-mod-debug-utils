@@ -7,7 +7,7 @@
     <ProjectGuid>{71A788A7-18C2-48AA-87F5-F58FCAB248EF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ksp_scene_debugger</RootNamespace>
+    <RootNamespace>KSPSceneDebugger</RootNamespace>
     <AssemblyName>ksp-scene-debugger</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -40,13 +40,19 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Toolbar">
+      <HintPath>..\ksp-advanced-flybywire\builds\x64\GameData\000_Toolbar\Toolbar.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>.\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GUIUtils.cs" />
     <Compile Include="SceneDebugger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TimeScaleWindow.cs" />
+    <Compile Include="WatchWindow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

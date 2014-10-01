@@ -12,7 +12,7 @@ namespace KSPSceneDebugger
     class TimeScaleWindow
     {
 
-        private Rect m_WindowRect = new Rect(640, 32, 128, 64);
+        private Rect m_WindowRect = new Rect(640, 32, 64, 32);
 
         public void OnTimeScaleWindow(int index)
         {

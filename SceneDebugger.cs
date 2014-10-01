@@ -19,6 +19,7 @@ namespace KSPSceneDebugger
         private float m_TreeIdentSpacing = 4.0f;
 
         private HashSet<GameObject> m_Expanded = new HashSet<GameObject>();
+        private HashSet<Component> m_ExpandedComponents = new HashSet<Component>();
 
         private WatchWindow m_WatchWindow = new WatchWindow();
         private TimeScaleWindow m_TimeScaleWindow = new TimeScaleWindow();
@@ -161,6 +162,31 @@ namespace KSPSceneDebugger
                     GUILayout.Label("property ");
                     GUILayout.Label(field.FieldType.ToString() + " ");
                 }
+                else if (field.MemberType == MemberTypes.NestedType)
+                {
+                    GUILayout.Label("nested type ");
+                    GUILayout.Label(field.FieldType.ToString() + " ");
+                }
+                else if (field.MemberType == MemberTypes.Constructor)
+                {
+                    GUILayout.Label("constructor ");
+                    GUILayout.Label(field.FieldType.ToString() + " ");
+                }
+                else if (field.MemberType == MemberTypes.Custom)
+                {
+                    GUILayout.Label("custom ");
+                    GUILayout.Label(field.FieldType.ToString() + " ");
+                }
+                else if (field.MemberType == MemberTypes.Event)
+                {
+                    GUILayout.Label("event ");
+                    GUILayout.Label(field.FieldType.ToString() + " ");
+                }
+                else if (field.MemberType == MemberTypes.TypeInfo)
+                {
+                    GUILayout.Label("typeinfo ");
+                    GUILayout.Label(field.FieldType.ToString() + " ");
+                }
 
                 GUILayout.Label(field.Name);
 
@@ -185,7 +211,30 @@ namespace KSPSceneDebugger
             var components = obj.GetComponents(typeof(Component));
             foreach(var component in components)
             {
-                OnSceneTreeReflect(component, ident);
+                GUILayout.BeginHorizontal();
+                GUILayout.Space(m_TreeIdentSpacing * ident);
+
+                if (m_ExpandedComponents.Contains(component))
+                {
+                    if (GUILayout.Button("-"))
+                    {
+                        m_ExpandedComponents.Remove(component);
+                    }
+
+                    GUILayout.Label(component.name + "(" + component.GetType().ToString() + ")");
+                    OnSceneTreeReflect(component, ident);
+                }
+                else
+                {
+                    if (GUILayout.Button("+"))
+                    {
+                        m_ExpandedComponents.Add(component);
+                    }
+
+                    GUILayout.Label(component.name + "(" + component.GetType().ToString() + ")");
+                }
+               
+                GUILayout.EndHorizontal();
             }
         }
 

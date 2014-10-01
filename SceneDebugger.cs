@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Reflection;
 
 using UnityEngine;
 
-namespace KSPSceneDebugger
+namespace KSPModDebugUtils
 {
 
     [KSPAddon(KSPAddon.Startup.EveryScene, false)]

@@ -12,38 +12,42 @@ namespace KSPModDebugUtils
     class WatchWindow
     {
 
-        private Rect m_WindowRect = new Rect(512, 32, 128, 64);
+        private Rect m_WindowRect = new Rect(512, 32, 512, 256);
 
-        private List<KeyValuePair<System.Object, FieldInfo>> m_Watches = new List<KeyValuePair<object, FieldInfo>>();
+        private List<KeyValuePair<System.Object, FieldInfo>> m_FieldWatches = new List<KeyValuePair<object, FieldInfo>>();
+        private List<KeyValuePair<System.Object, PropertyInfo>> m_PropertyWatches = new List<KeyValuePair<object, PropertyInfo>>(); 
 
-        public bool IsWatchable(FieldInfo field)
+        public void AddWatch(System.Object obj, FieldInfo field)
         {
-            if (field.MemberType != MemberTypes.Field && field.MemberType != MemberTypes.Property)
-            {
-                return false;
-            }
-
-            return true;
+            m_FieldWatches.Add(new KeyValuePair<object, FieldInfo>(obj, field));
         }
 
-        public bool AddWatch(System.Object obj, FieldInfo field)
+        public void AddWatch(System.Object obj, PropertyInfo field)
         {
-            if (field.MemberType != MemberTypes.Field && field.MemberType != MemberTypes.Property)
-            {
-                return false;
-            }
-
-            m_Watches.Add(new KeyValuePair<object, FieldInfo>(obj, field));
-            return true;
+            m_PropertyWatches.Add(new KeyValuePair<object, PropertyInfo>(obj, field));
         }
 
         public bool RemoveWatch(System.Object obj, FieldInfo field)
         {
-            for (int i = 0; i < m_Watches.Count; i++)
+            for (int i = 0; i < m_FieldWatches.Count; i++)
             {
-                if (m_Watches[i].Key == obj && m_Watches[i].Value == field)
+                if (m_FieldWatches[i].Key == obj && m_FieldWatches[i].Value == field)
                 {
-                    m_Watches.RemoveAt(i);
+                    m_FieldWatches.RemoveAt(i);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public bool RemoveWatch(System.Object obj, PropertyInfo field)
+        {
+            for (int i = 0; i < m_PropertyWatches.Count; i++)
+            {
+                if (m_PropertyWatches[i].Key == obj && m_PropertyWatches[i].Value == field)
+                {
+                    m_PropertyWatches.RemoveAt(i);
                     return true;
                 }
             }
@@ -53,7 +57,7 @@ namespace KSPModDebugUtils
 
         public void OnWatchWindow(int index)
         {
-            foreach (var watch in m_Watches)
+            foreach (var watch in m_FieldWatches)
             {
                 FieldInfo field = watch.Value;
                 System.Object obj = watch.Key;
@@ -63,32 +67,33 @@ namespace KSPModDebugUtils
                 Type objType = obj.GetType();
                 GUILayout.Label(objType.ToString());
 
-                if (field.MemberType == MemberTypes.Field)
+                if (field.FieldType == typeof(float))
                 {
-                    if (field.FieldType == typeof(float))
-                    {
-                        float value = (float)field.GetValue(obj);
-                        GUIControls.FloatField(field.Name, ref value);
-                        field.SetValue(obj, value);
-                    }
-                    else if (field.FieldType == typeof(int))
-                    {
-                        int value = (int)field.GetValue(obj);
-                        GUIControls.IntField(field.Name, ref value);
-                        field.SetValue(obj, value);
-                    }
-                    else if (field.FieldType == typeof(string))
-                    {
-                        string value = (string)field.GetValue(obj);
-                        GUIControls.StringField(field.Name, ref value);
-                        field.SetValue(obj, value);
-                    }
-                    else if (field.FieldType == typeof(bool))
-                    {
-                        bool value = (bool)field.GetValue(obj);
-                        GUIControls.BoolField(field.Name, ref value);
-                        field.SetValue(obj, value);
-                    }
+                    float value = (float)field.GetValue(obj);
+                    GUIControls.FloatField(field.Name, ref value);
+                    field.SetValue(obj, value);
+                }
+                else if (field.FieldType == typeof(int))
+                {
+                    int value = (int)field.GetValue(obj);
+                    GUIControls.IntField(field.Name, ref value);
+                    field.SetValue(obj, value);
+                }
+                else if (field.FieldType == typeof(string))
+                {
+                    string value = (string)field.GetValue(obj);
+                    GUIControls.StringField(field.Name, ref value);
+                    field.SetValue(obj, value);
+                }
+                else if (field.FieldType == typeof(bool))
+                {
+                    bool value = (bool)field.GetValue(obj);
+                    GUIControls.BoolField(field.Name, ref value);
+                    field.SetValue(obj, value);
+                }
+                else
+                {
+                    GUILayout.Label(field.Name + " " + field.GetValue(watch.Key).ToString());
                 }
 
                 if (GUILayout.Button("X"))
@@ -99,11 +104,65 @@ namespace KSPModDebugUtils
 
                 GUILayout.EndHorizontal();
             }
+
+            foreach (var watch in m_PropertyWatches)
+            {
+                PropertyInfo field = watch.Value;
+                System.Object obj = watch.Key;
+
+                GUILayout.BeginHorizontal();
+
+                Type objType = obj.GetType();
+                GUILayout.Label(objType.ToString());
+
+                if (field.GetValue(obj, null) == null)
+                {
+                    GUILayout.Label("null");
+                }
+                else if (field.PropertyType == typeof(float))
+                {
+                    float value = (float)field.GetValue(obj, null);
+                    GUIControls.FloatField(field.Name, ref value);
+                    field.SetValue(obj, value, null);
+                }
+                else if (field.PropertyType == typeof(int))
+                {
+                    int value = (int)field.GetValue(obj, null);
+                    GUIControls.IntField(field.Name, ref value);
+                    field.SetValue(obj, value, null);
+                }
+                else if (field.PropertyType == typeof(string))
+                {
+                    string value = (string)field.GetValue(obj, null);
+                    GUIControls.StringField(field.Name, ref value);
+                    field.SetValue(obj, value, null);
+                }
+                else if (field.PropertyType == typeof(bool))
+                {
+                    bool value = (bool)field.GetValue(obj, null);
+                    GUIControls.BoolField(field.Name, ref value);
+                    field.SetValue(obj, value, null);
+                }
+                else
+                {
+                    GUILayout.Label(field.Name + " " + field.GetValue(watch.Key, null).ToString());
+                }
+
+                if (GUILayout.Button("X"))
+                {
+                    RemoveWatch(obj, field);
+                    return;
+                }
+
+                GUILayout.EndHorizontal();
+            }
+
+            GUI.DragWindow();
         }
 
         public void OnGUI()
         {
-            m_WindowRect = GUI.Window(5162, m_WindowRect, OnWatchWindow, "Watches (Scene Debugger)");
+            m_WindowRect = GUI.Window(512521, m_WindowRect, OnWatchWindow, "Watches (Scene Debugger)");
         }
 
     }

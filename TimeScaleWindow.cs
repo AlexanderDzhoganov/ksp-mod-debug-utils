@@ -11,7 +11,7 @@ namespace KSPModDebugUtils
     class TimeScaleWindow
     {
 
-        private Rect m_WindowRect = new Rect(640, 32, 64, 32);
+        private Rect m_WindowRect = new Rect(1024, 32, 256, 64);
 
         public void OnTimeScaleWindow(int index)
         {

@@ -11,58 +11,58 @@ namespace KSPModDebugUtils
     class GUIControls
     {
 
-        static float nameSize = 256;
-        static float spacing = 8;
+        static float fieldSize = 128;
 
         static public void FloatField(string name, ref float value)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(name, GUILayout.Width(nameSize));
-            GUILayout.Space(spacing);
+            GUILayout.Label(name);
 
             float oldValue = value;
+            string oldValueString = value.ToString();
+            string newValue = GUILayout.TextField(oldValueString, GUILayout.Width(fieldSize));
 
-            string newValue = GUILayout.TextField(value.ToString("0.00"));
-            if (!float.TryParse(newValue, out value))
+            if (oldValueString != newValue && !float.TryParse(newValue, out value))
             {
                 value = oldValue;
             }
 
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
 
         static public void IntField(string name, ref int value)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(name, GUILayout.Width(nameSize));
-            GUILayout.Space(spacing);
+            GUILayout.Label(name);
 
             int oldValue = value;
 
-            string newValue = GUILayout.TextField(value.ToString());
+            string newValue = GUILayout.TextField(value.ToString(), GUILayout.Width(fieldSize));
             if (!int.TryParse(newValue, out value))
             {
                 value = oldValue;
             }
 
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
 
         static public void StringField(string name, ref string value)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(name, GUILayout.Width(nameSize));
-            GUILayout.Space(spacing);
-            value =  GUILayout.TextField(value);
+            GUILayout.Label(name);
+            value = GUILayout.TextField(value, GUILayout.Width(fieldSize));
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
 
         static public void BoolField(string name, ref bool value)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(name, GUILayout.Width(nameSize));
-            GUILayout.Space(spacing);
+            GUILayout.Label(name);
             value = GUILayout.Toggle(value, "");
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
 
